@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inquiry/Order Form</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+</head>
+<body>
+<div class="main-container">
+   
+    <div class="form-container">
+        <h1>Inquiry/Order Form</h1>
+
+        <!-- Div 1 -->
+        <div class="form-step" id="step1">
+            <input type="email" id="email" placeholder="Enter your email" style="width: 50%; height: auto"/>
+            <button id="continue-btn" class="btn" onclick="checkEmail()">Continue</button>
+        </div>
+
+
+        <!-- Step 2: Upload File -->
+        <div class="form-step">
+    <h2>Step1:Upload Files <i class="material-icons toggle-icon">expand_more</i></h2>
+    <hr>
+    <div class="upload-box">
+       <div id="uplaod">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p>Files for editing</p>
+            <p><em>256-bit encryption</em></p>
+          </div>
+          <div class="drop-zone">
+            <span>Drag and drop your files here or</span>
+            <input type="file" id="file-input" multiple>
+            <hr>
+            <div id="file-container"></div>
+            <label for="file-input" class="upload-button">Upload files</label>
+          </div>
+          <p>or</p>
+       </div>
+      
+      
+        <div id="word-count-section">
+          <!-- Link to toggle word count input (Updated the ID to be unique) -->
+          <a href="#" id="word-count-toggle-link" onclick="toggleWordCountInput(event)">Enter an approximate word count</a>
+      
+          <!-- Word count input field (hidden initially) -->
+          <div class="word-count" id="word-count-container" style="display: none;">
+            <label for="word-count-input">Enter an approximate word count:</label>
+            <input type="number" id="word-count-input" />
+            <p>or</p>
+            <!-- Back link to switch back to file upload -->
+            <a href="#" id="word-count-back-link" onclick="toggleWordCountInputBack(event)">Upload files for editing</a>
+          </div>
+        </div>
+      
+        <button class="proceed-btn">Proceed to Next</button>
+      </div>
+   
+          </div>
+        
+        <!-- Div 3 -->
+        <div class="form-step">
+            <h2>Step 2: Select Service & Delivery Plan <i class="material-icons toggle-icon">expand_more</i></h2>
+            <hr>
+        <div class="service-container">
+          <div class="service-options" >
+            <label class="service-option">
+                <input type="radio" name="service" id="scientificEditing" onclick="handleSelection('scientific','addons1')">
+                <div class="option-content">
+                    📘 Top Impact Scientific Editing
+                </div>
+            </label>
+
+            <label class="service-option">
+                <input type="radio" name="service" id="substantiveEditing" onclick="handleSelection('substantive','addons2')">
+                <div class="option-content">
+                    <span>👑 Substantive Editing</span>
+                </div>
+            </label>
+            <label class="service-option">
+                <input type="radio" name="service" id="scientificEditing" onclick="handleSelection('scientific','addons3',)">
+                <div class="option-content">
+                    <span>🖋️Copy Editing</span>
+                </div>
+            </label>
+            <label class="service-option">
+                <input type="radio" name="service" id="substantiveEditing" onclick="handleSelection('substantive','addons4')">
+                <div class="option-content">
+                    <span>📜 Proofreading Service</span>
+                </div>
+            </label>
+        </div>
+
+        <!-- Top Impact Scientific Editing Table -->
+        <div id="scientificTable" class="delivery-table hidden">
+            <h3>Select delivery date (GMT)</h3>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Mon, 24 Feb 08:30</span>
+                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Tue, 18 Feb 10:30</span>
+                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Wed, 01 Mar 12:30</span>
+                <span class="price"><del>$3,159.6</del> <strong>$2,449.52</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Tue, 18 Feb 10:30</span>
+                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>I need a custom plan</span>
+                <span class="price"></span>
+            </label>
+        </div>
+        
+
+        <!-- Substantive Editing Table -->
+        <div id="substantiveTable" class="delivery-table hidden">
+            <h3>Select delivery date (GMT)</h3>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Fri, 14 Feb 08:30</span>
+                <span class="badge popular">Popular</span>
+                <span class="price"><del>$612</del> <strong>$489.6</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            
+        </div>
+
+        <div id="scientificTable" class="delivery-table hidden">
+            <h3>Select delivery date (GMT)</h3>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Mon, 24 Feb 08:30</span>
+                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Tue, 18 Feb 10:30</span>
+                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            
+        </div>
+
+        <div id="scientificTable" class="delivery-table hidden">
+            <h3>Select delivery date (GMT)</h3>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Mon, 24 Feb 08:30</span>
+                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Tue, 18 Feb 10:30</span>
+                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            
+            
+        </div>
+        <div id="addons1" class="add-ons hidden">
+            <h4>Add-Ons for Top Impact Scientific Editing</h4>
+            <label><input type="checkbox"> Poster Presentation - $249</label>
+            <label><input type="checkbox"> Scientific News Report - $249</label>
+            <div class="free-services">
+                <h4>Free Services</h4>
+                <label><input type="checkbox" checked> Certificate of Editing</label>
+                <label><input type="checkbox" checked> Manuscript Rate Card</label>
+                <label><input type="checkbox" checked> Artwork Rework</label>
+                <label><input type="checkbox" checked> Resubmission Support</label>
+            </div>
+        </div>
+        
+        <div id="addons2" class="add-ons hidden">
+            <h4>Add-Ons for Substantive Editing</h4>
+            <label><input type="checkbox"> Simplified Abstract - $199</label>
+            <label><input type="checkbox"> Graphical Abstract - $299</label>
+            <div class="free-services">
+                <h4>Free Services</h4>
+                <label><input type="checkbox" checked> Certificate of Editing</label>
+                <label><input type="checkbox" checked> Manuscript Rate Card</label>
+                <label><input type="checkbox" checked> Artwork Rework</label>
+                <label><input type="checkbox" checked> Resubmission Support</label>
+            </div>
+        </div>
+        
+        <div id="addons3" class="add-ons">
+            <h4>Add-Ons</h4>
+            <label><input type="checkbox"> Poster Presentation - $249</label>
+            <label><input type="checkbox"> Scientific News Report - $249</label>
+            <label><input type="checkbox"> Simplified Abstract - $199</label>
+            <label><input type="checkbox"> Graphical Abstract - $299</label>
+            <label><input type="checkbox"> Journal Submission - $180</label>
+            <label>
+                <input type="checkbox"> Artwork Editing - 
+                <span>starting at $60 per 4 figures</span>
+                <select>
+                    <option>1-4 images</option>
+                    <option>5-8 images</option>
+                    <option>9-12 images</option>
+                </select>
+            </label>
+            <div class="free-services">
+                <div><h4>Free Services</h4></div>
+               <div class="freeser">
+                <label><input type="checkbox" checked> Certificate of Editing</label>
+                <label><input type="checkbox" checked> Manuscript Rate Card</label>
+                <label><input type="checkbox" checked> Artwork Rework</label>
+                <label><input type="checkbox" checked> Resubmission Support</label>
+               </div>
+            </div>
+        </div>
+        
+        <div id="addons4" class="add-ons hidden">
+            <h4>Add-Ons for Language Enhancement</h4>
+            <label><input type="checkbox"> Certificate of Editing</label>
+            <label><input type="checkbox"> Plagiarism Check - iThenticate</label>
+            <div class="free-services">
+                <h4>Free Services</h4>
+                <label><input type="checkbox" checked> Certificate of Editing</label>
+                <label><input type="checkbox" checked> Manuscript Rate Card</label>
+                <label><input type="checkbox" checked> Artwork Rework</label>
+                <label><input type="checkbox" checked> Resubmission Support</label>
+            </div>
+        </div>
+            <button  class="proceed-btn">Proceed to Next</button>
+          </div>
+          </div>
+
+        <!-- Div 4 -->
+        <div class="form-step">
+            <h2>Step 3: Subject Area & Journal Details <i class="material-icons toggle-icon">expand_more</i></h2>
+     <hr>
+        <div class="form-cont">
+            <div class="container">
+                <div class="left-box">
+                    <label for="subject-area">Subject Area <span style="color: red;">*</span></label>
+                    <hr>
+                    <label for="journal-name">Journal Name</label>
+                    <hr>
+                    <label for="order-instructions">Order Instructions</label>
+                    <hr>
+                </div>
+                <div class="right-box">
+                    <div class="form-group">
+                      
+                        <input type="text" id="subject-area" placeholder="Please enter your subject area">
+                    </div>
+                    <div class="form-group">
+                       
+                        <input type="text" id="journal-name" placeholder="Enter name of journal, ISSN no., or eISSN no.">
+                    </div>
+                    <div class="form-group">
+                      
+                        <textarea id="order-instructions" placeholder="Please mention any specific instructions related to your order"></textarea>
+                    </div>
+                </div>
+            </div>
+       
+            <button  class="proceed-btn" >Proceed to Next</button>
+          </div>
+          </div>
+
+        <!-- Div 5 -->
+       
+       
+        
+          <div class="form-step">
+            <h2>Step 4: Other Detail <i class="material-icons toggle-icon">expand_more</i></h2>
+            <hr>
+            <div class="form-con">
+            <div class="form-group">
+                <label class="personal-info-label">
+                    <div>
+                    Personal Information <span class="required">*</span>
+                   </div>
+              </label>
+                <div>
+                    <div class="input-row">
+                        <input type="text" placeholder="Full name in English" id="fullName">
+                        <input type="email" placeholder="Secondary email address" id="email">
+                    </div>
+                    <div class="input-row">
+                        <input type="text" value="+92" disabled class="country-code">
+                        <input type="text" placeholder="Mobile Number" id="mobile">
+                    </div>
+                </div>
+            </div>
+    
+            <div class="quick-start">
+                <span class="lightning">⚡</span> <span class="bold-text">Quick Start</span>
+            </div>
+    
+            <div class="options">
+              <label class="option gray-box" id="optionStart">
+                  <input type="radio" name="quickStart" id="startEditing">
+                  <span class="bold-text">Yes, Start Editing My Paper.</span>
+                  <p class="description">Please initiate work on my paper if the total amount does not exceed <span class="bold-text">$500</span> <a href="#" id="editLink">edit.</a></p>
+              </label>
+          
+              <label class="option gray-box" id="optionQuote">
+                  <input type="radio" name="quickStart" id="getQuote">
+                  <span class="bold-text">Share A Quotation First.</span>
+                  <p class="description">Please share a quotation for my order with me first. (You will receive it within 60 minutes).</p>
+              </label>
+          </div>
+          
+    
+        <div class="checkbox">
+          <input type="checkbox" id="updates">
+          <label for="updates">Keep me updated with offers, new services, and the latest industry news.</label>
+        </div>
+      </div>
+    </div>
+          <button href="#" class="btn">SUBMIT NOW</button>
+    </div>
+    <div class="order-summary">
+        <h2>Order Summary</h2>
+        <div class="service-details">
+            <h3>Service Name</h3>
+            <p>Substantive Editing</p>
+        </div>
+        <div class="add-ons-summary">
+            <h3>ADD-ONS:</h3>
+            <ul>
+                <li>Edit Unlimited <span class="free">FREE</span></li>
+                <li>Rejection Shield <span class="free">FREE</span></li>
+                <li>Cover Letter <span class="free">FREE</span></li>
+                <li>Manuscript Rate Card <span class="free">FREE</span></li>
+                <li>Certificate Of Editing <span class="free">FREE</span></li>
+            </ul>
+        </div>
+        <div class="rewards-section">
+            <h3>REWARDS CLUB</h3>
+            <p>Every dollar you spend means you'll pay less for your next order!</p>
+        </div>
+        <div class="promo-code-section">
+            <label for="promo-code">Enter promo code:</label>
+            <input type="text" id="promo-code" placeholder="APPLY">
+            <button id="apply-promo">APPLY</button>
+        </div>
+    </div>
+</div>
+    <script src="script.js"></script>
+</body>
+</html>
