@@ -365,13 +365,22 @@ document.addEventListener("DOMContentLoaded", function () {
 document.querySelectorAll(".add-ons input[type='checkbox']").forEach(checkbox => {
     checkbox.addEventListener("change", function () {
         const label = this.parentNode;
-        const serviceName = label.childNodes[1].textContent.trim(); // Extracting only the service name
+        // Clone the label and remove unwanted elements to extract only the service name
+        const labelClone = label.cloneNode(true);
+        // Remove all spans (which include pricing info)
+        labelClone.querySelectorAll("span").forEach(el => el.remove());
+        // Remove any select elements (if present)
+        labelClone.querySelectorAll("select").forEach(el => el.remove());
+        const serviceName = labelClone.textContent.trim();
+
+        // Get the price from the original label
         const priceElement = label.querySelector(".price strong");
         const price = priceElement ? parseFloat(priceElement.textContent.replace("$", "")) : 0;
 
         if (this.checked) {
             addToOrderSummary(serviceName, price);
         } else {
+            // Remove the item from the order summary if unchecked
             const listItem = [...addOnsSummary.children].find(li => li.textContent.includes(serviceName));
             if (listItem) {
                 totalPrice -= price;
