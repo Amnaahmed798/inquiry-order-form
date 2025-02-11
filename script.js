@@ -16,48 +16,53 @@ fileInput?.addEventListener('change', (event) => {
   console.log("File input changed. Number of files:", fileList ? fileList.length : 0);
 
   if (fileList && fileList.length > 0) {
-    
     const newFiles = Array.from(fileList);
-    newFiles.forEach(file => {
-      
-      allFiles.push({ file: file, wordCount: 0 });
+    newFiles.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const text = e.target.result;
+        const wordCount = countWords(text);
+        allFiles.push({ file: file, wordCount: wordCount });
+        renderFiles();
+      };
+
+      if (file.type === "text/plain") {
+        reader.readAsText(file);
+      } else {
+        allFiles.push({ file: file, wordCount: "N/A" });
+        renderFiles();
+      }
     });
 
-    renderFiles(); 
-    input.value = ""; 
+    input.value = "";
   }
 });
 
+// Function to count words in a text
+function countWords(text) {
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+}
+
 // Function to render files in the container
 function renderFiles() {
-  // Clear any previous file display
   fileContainer.innerHTML = "";
 
   if (allFiles.length > 0) {
     allFiles.forEach((fileObj, index) => {
       const file = fileObj.file;
 
-      // Create file display element
-      const fileElement = document.createElement('div');
-      fileElement.classList.add('file-item');
+      const fileElement = document.createElement("div");
+      fileElement.classList.add("file-item");
 
-      const fileName = document.createElement('span');
-      // Get file extension from MIME type (if available) or default to "unknown"
-      const fileType = file.type ? file.type.split('/')[1] : 'unknown';
+      const fileName = document.createElement("span");
+      const fileType = file.type ? file.type.split("/")[1] : "unknown";
       fileName.textContent = `${file.name} (${fileType})`;
       fileElement.appendChild(fileName);
 
-      // Create an input for the word count
-      const wordCountInput = document.createElement('input');
-      wordCountInput.type = 'number';
-      wordCountInput.value = fileObj.wordCount;
-      wordCountInput.min = 0; // Prevent negative word counts
-      wordCountInput.addEventListener('input', (e) => {
-        // Update the word count in the array when the user changes it
-        allFiles[index].wordCount = parseInt(e.target.value, 10);
-      });
-      fileElement.appendChild(wordCountInput);
-
+      const wordCountDisplay = document.createElement("span");
+      wordCountDisplay.textContent = `Words: ${fileObj.wordCount}`;
+      fileElement.appendChild(wordCountDisplay);
       // Create the trash bin icon
       const removeIcon = document.createElement('i');
       removeIcon.classList.add('fas', 'fa-trash', 'remove-icon');
@@ -273,74 +278,128 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function handleSelection(service, addonId) {
-    toggleTable(service);
-    showAddOns(addonId);
+const services = document.querySelectorAll(".service-option input[name='service']");
+const addOnsContainers = document.querySelectorAll(".add-ons");
+const orderSummary = document.querySelector(".order-summary .service-details p");
+const addOnsSummary = document.querySelector(".order-summary .add-ons-summary ul");
+const totalPriceEl = document.getElementById("total-price");
+const promoInput = document.getElementById("promo-code");
+const applyPromoBtn = document.getElementById("apply-promo");
+
+let totalPrice = 0;
+let promoApplied = false;
+
+function updateTotalPrice() {
+    totalPriceEl.textContent = totalPrice.toFixed(2);
 }
 
-function toggleTable(service) {
-    const scientificTable = document.getElementById("scientificTable");
-    const substantiveTable = document.getElementById("substantiveTable");
-
-    if (service === "scientific") {
-        scientificTable.classList.remove("hidden");
-        substantiveTable.classList.add("hidden");
-    } else if (service === "substantive") {
-        scientificTable.classList.add("hidden");
-        substantiveTable.classList.remove("hidden");
-    }
-}
-
-function showAddOns(addonId) {
+function handleSelection(serviceId, addOnsId) {
     // Hide all add-ons sections
-    document.querySelectorAll(".add-ons").forEach(addon => addon.classList.add("hidden"));
+    addOnsContainers.forEach(container => container.classList.add("hidden"));
 
-    // Show the selected add-ons section
-    const selectedAddon = document.getElementById(addonId);
-    if (selectedAddon) {
-        selectedAddon.classList.remove("hidden");
+    // Reset order summary
+    addOnsSummary.innerHTML = "";
+    totalPrice = 0;
+
+    // Get the selected add-ons container
+    const selectedService = document.getElementById(addOnsId);
+    if (!selectedService) {
+        console.error(`Error: Add-ons container with ID '${addOnsId}' not found.`);
+        return;
     }
+
+    // Show the selected add-ons container
+    selectedService.classList.remove("hidden");
+
+    // Update order summary with selected service
+    const serviceText = document.querySelector(`#${serviceId} + .option-content`).textContent.trim();
+    orderSummary.textContent = serviceText;
+
+    const freeServices = selectedService.querySelectorAll(".free-services input");
+    if (freeServices.length > 0) {
+        addToOrderSummary(freeServices[0].parentNode.textContent.trim(), 0);
+    }
+
+    // Add free services to order summary
+    selectedService.querySelectorAll(".free-services input").forEach(service => {
+        addToOrderSummary(service.parentNode.textContent.trim(), 0);
+    });
+
+    updateTotalPrice();
 }
-// JavaScript for applying promo code
-document.getElementById("apply-promo").addEventListener("click", function () {
-    const promoCode = document.getElementById("promo-code").value;
-    if (promoCode.trim() === "") {
-        alert("Please enter a promo code.");
-    } else {
-        alert(`Promo code "${promoCode}" applied successfully!`);
-        // You can add logic here to validate and apply the promo code
+
+function addToOrderSummary(name, price) {
+    // Check if the item already exists in the summary
+    if ([...addOnsSummary.children].some(li => li.textContent.includes(name))) return;
+
+    const li = document.createElement("li");
+
+    // Show "FREE" if price is 0, otherwise show the actual price
+    li.innerHTML = `${name} - ${price === 0 ? '<span style="color: green; font-weight: bold;">FREE</span>' : `<span style="color: black; font-weight: bold;">$${price.toFixed(2)}</span>`} <button class="remove-btn">❌</button>`;
+    addOnsSummary.appendChild(li);
+
+    if (price > 0) {
+        totalPrice += price;
+        updateTotalPrice();
+    }
+
+    // Remove item when ❌ is clicked
+    li.querySelector(".remove-btn").addEventListener("click", function () {
+        if (price > 0) {
+            totalPrice -= price;
+            updateTotalPrice();
+        }
+        li.remove();
+    });
+}
+document.addEventListener("DOMContentLoaded", function () {
+    const defaultFreeServices = document.querySelectorAll("#addons1 .free-services input[type='checkbox']");
+    defaultFreeServices.forEach(checkbox => {
+        const label = checkbox.parentNode;
+        const serviceName = label.childNodes[1].textContent.trim();
+        addToOrderSummary(serviceName, 0); // Adding free services as "FREE"
+    });
+});
+
+// Add-ons selection functionality
+document.querySelectorAll(".add-ons input[type='checkbox']").forEach(checkbox => {
+    checkbox.addEventListener("change", function () {
+        const label = this.parentNode;
+        const serviceName = label.childNodes[1].textContent.trim(); // Extracting only the service name
+        const priceElement = label.querySelector(".price strong");
+        const price = priceElement ? parseFloat(priceElement.textContent.replace("$", "")) : 0;
+
+        if (this.checked) {
+            addToOrderSummary(serviceName, price);
+        } else {
+            const listItem = [...addOnsSummary.children].find(li => li.textContent.includes(serviceName));
+            if (listItem) {
+                totalPrice -= price;
+                listItem.remove();
+                updateTotalPrice();
+            }
+        }
+    });
+    // Keep checkboxes checked if they were checked by default
+    if (checkbox.hasAttribute("checked")) {
+        checkbox.checked = true;
     }
 });
 
-function toggleWordCountInput(event) {
-    event.preventDefault(); // Prevent default link behavior
 
-    const wordCountLink = document.getElementById('word-count-toggle-link');
-    const wordCountContainer = document.getElementById('word-count-container');
-    const uploadBox = document.getElementById('uplaod'); // Correct the selector to target the right ID
+// Promo code functionality
+applyPromoBtn.addEventListener("click", function () {
+    if (promoApplied) {
+        alert("Promo code already applied.");
+        return;
+    }
 
-    // Hide the "Enter an approximate word count" link, hide the upload box, and show the word count input container
-    wordCountLink.style.display = 'none'; // Hide the link
-    uploadBox.style.display = 'none'; // Hide the entire upload box
-    wordCountContainer.style.display = 'block'; // Show the input container
-
-    // Show the back link ("Upload files for editing")
-    const wordCountBackLink = document.getElementById('word-count-back-link');
-    wordCountBackLink.style.display = 'inline'; // Show the back link to switch back
-}
-
-// Function to go back to the original "Enter an approximate word count" link
-function toggleWordCountInputBack(event) {
-    event.preventDefault(); // Prevent default link behavior
-
-    const wordCountLink = document.getElementById('word-count-toggle-link');
-    const wordCountContainer = document.getElementById('word-count-container');
-    const uploadBox = document.getElementById('uplaod'); // Correct the selector to target the right ID
-
-    // Hide the word count input container and show the original link again
-    wordCountContainer.style.display = 'none'; // Hide the word count container
-    wordCountLink.style.display = 'inline'; // Show the original link again
-
-    // Show the upload box again
-    uploadBox.style.display = 'block'; // Show the upload box again
-}
+    if (promoInput.value.trim() === "DISCOUNT10") {
+        totalPrice *= 0.9;
+        updateTotalPrice();
+        alert("Promo code applied! 10% discount.");
+        promoApplied = true;
+    } else {
+        alert("Invalid promo code.");
+    }
+});

@@ -69,151 +69,37 @@
         <div class="service-container">
           <div class="service-options" >
             <label class="service-option">
-                <input type="radio" name="service" id="scientificEditing" onclick="handleSelection('scientific','addons1')">
+                <input type="radio" name="service" id="scientificEditing" onclick="handleSelection('scientificEditing','addons1')">
                 <div class="option-content">
                     📘 Top Impact Scientific Editing
                 </div>
             </label>
 
             <label class="service-option">
-                <input type="radio" name="service" id="substantiveEditing" onclick="handleSelection('substantive','addons2')">
+                <input type="radio" name="service" id="substantiveEditing" onclick="handleSelection('substantiveEditing','addons2')">
                 <div class="option-content">
                     <span>👑 Substantive Editing</span>
                 </div>
             </label>
             <label class="service-option">
-                <input type="radio" name="service" id="scientificEditing" onclick="handleSelection('scientific','addons3',)">
+                <input type="radio" name="service" id="copyEditing" onclick="handleSelection('copyEditing','addons3',)">
                 <div class="option-content">
                     <span>🖋️Copy Editing</span>
                 </div>
             </label>
             <label class="service-option">
-                <input type="radio" name="service" id="substantiveEditing" onclick="handleSelection('substantive','addons4')">
+                <input type="radio" name="service" id="proofreading" onclick="handleSelection('proofreading','addons4')">
                 <div class="option-content">
                     <span>📜 Proofreading Service</span>
                 </div>
             </label>
         </div>
 
-        <!-- Top Impact Scientific Editing Table -->
-        <div id="scientificTable" class="delivery-table hidden">
-            <h3>Select delivery date (GMT)</h3>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>Mon, 24 Feb 08:30</span>
-                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>Tue, 18 Feb 10:30</span>
-                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>Wed, 01 Mar 12:30</span>
-                <span class="price"><del>$3,159.6</del> <strong>$2,449.52</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>Tue, 18 Feb 10:30</span>
-                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>I need a custom plan</span>
-                <span class="price"></span>
-            </label>
-        </div>
-        
-
-        <!-- Substantive Editing Table -->
-        <div id="substantiveTable" class="delivery-table hidden">
-            <h3>Select delivery date (GMT)</h3>
-            <label class="delivery-option">
-                <input type="radio" name="substantive-delivery">
-                <span>Fri, 14 Feb 08:30</span>
-                <span class="badge popular">Popular</span>
-                <span class="price"><del>$612</del> <strong>$489.6</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="substantive-delivery">
-                <span>Tue, 11 Feb 10:30</span>
-                <span class="badge trending">Trending</span>
-                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="substantive-delivery">
-                <span>Tue, 11 Feb 10:30</span>
-                <span class="badge trending">Trending</span>
-                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="substantive-delivery">
-                <span>Tue, 11 Feb 10:30</span>
-                <span class="badge trending">Trending</span>
-                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
-            </label>
-            
-        </div>
-
-        <div id="scientificTable" class="delivery-table hidden">
-            <h3>Select delivery date (GMT)</h3>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>Mon, 24 Feb 08:30</span>
-                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>Tue, 18 Feb 10:30</span>
-                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="substantive-delivery">
-                <span>Tue, 11 Feb 10:30</span>
-                <span class="badge trending">Trending</span>
-                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="substantive-delivery">
-                <span>Tue, 11 Feb 10:30</span>
-                <span class="badge trending">Trending</span>
-                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
-            </label>
-            
-        </div>
-
-        <div id="scientificTable" class="delivery-table hidden">
-            <h3>Select delivery date (GMT)</h3>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>Mon, 24 Feb 08:30</span>
-                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="scientific-delivery">
-                <span>Tue, 18 Feb 10:30</span>
-                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="substantive-delivery">
-                <span>Tue, 11 Feb 10:30</span>
-                <span class="badge trending">Trending</span>
-                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
-            </label>
-            <label class="delivery-option">
-                <input type="radio" name="substantive-delivery">
-                <span>Tue, 11 Feb 10:30</span>
-                <span class="badge trending">Trending</span>
-                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
-            </label>
-            
-            
-        </div>
+       
         <div id="addons1" class="add-ons hidden">
             <h4>Add-Ons for Top Impact Scientific Editing</h4>
-            <label><input type="checkbox"> Poster Presentation - $249</label>
-            <label><input type="checkbox"> Scientific News Report - $249</label>
+            <label><input type="checkbox">Poster Presentation<span class="price"> <strong>$584.8</strong></span></label>
+            <label><input type="checkbox">Scientific News Report<span class="price"> <strong>$584.8</strong></span></label>
             <div class="free-services">
                 <h4>Free Services</h4>
                 <label><input type="checkbox" checked> Certificate of Editing</label>
@@ -225,8 +111,8 @@
         
         <div id="addons2" class="add-ons hidden">
             <h4>Add-Ons for Substantive Editing</h4>
-            <label><input type="checkbox"> Simplified Abstract - $199</label>
-            <label><input type="checkbox"> Graphical Abstract - $299</label>
+            <label><input type="checkbox">Simplified Abstract<span class="price"> <strong>$584.8</strong></span></label>
+            <label><input type="checkbox">Graphical Abstract<span class="price"><strong>$584.8</strong></span></label>
             <div class="free-services">
                 <h4>Free Services</h4>
                 <label><input type="checkbox" checked> Certificate of Editing</label>
@@ -238,14 +124,14 @@
         
         <div id="addons3" class="add-ons">
             <h4>Add-Ons</h4>
-            <label><input type="checkbox"> Poster Presentation - $249</label>
-            <label><input type="checkbox"> Scientific News Report - $249</label>
-            <label><input type="checkbox"> Simplified Abstract - $199</label>
-            <label><input type="checkbox"> Graphical Abstract - $299</label>
-            <label><input type="checkbox"> Journal Submission - $180</label>
+            <label><input type="checkbox">Poster Presentation<span class="price"> <strong>$584.8</strong></span></label>
+            <label><input type="checkbox">Scientific News Report<span class="price"> <strong>$584.8</strong></span></label>
+            <label><input type="checkbox">Simplified Abstract<span class="price"> <strong>$584.8</strong></span></label>
+            <label><input type="checkbox"> Graphical Abstract<span class="price"> <strong>$584.8</strong></span></label>
+            <label><input type="checkbox"> Journal Submission <span class="price"> <strong>$584.8</strong></span></label>
             <label>
-                <input type="checkbox"> Artwork Editing - 
-                <span>starting at $60 per 4 figures</span>
+                <input type="checkbox"> Artwork Editing
+                <span>starting at <span  class="price"><strong>$60</strong></span> per 4 figures</span>
                 <select>
                     <option>1-4 images</option>
                     <option>5-8 images</option>
@@ -265,8 +151,8 @@
         
         <div id="addons4" class="add-ons hidden">
             <h4>Add-Ons for Language Enhancement</h4>
-            <label><input type="checkbox"> Certificate of Editing</label>
-            <label><input type="checkbox"> Plagiarism Check - iThenticate</label>
+            <label><input type="checkbox" style=" justify-content: space-between;"> <span>Certificate of Editing</span> <span class="price"> <strong>$584.8</strong></span></label>
+            <label><input type="checkbox"> Plagiarism Check - iThenticate <span class="price"> <strong>$584.8</strong></span></label>
             <div class="free-services">
                 <h4>Free Services</h4>
                 <label><input type="checkbox" checked> Certificate of Editing</label>
@@ -370,22 +256,20 @@
         <h2>Order Summary</h2>
         <div class="service-details">
             <h3>Service Name</h3>
-            <p>Substantive Editing</p>
+            <p></p>
         </div>
         <div class="add-ons-summary">
             <h3>ADD-ONS:</h3>
             <ul>
-                <li>Edit Unlimited <span class="free">FREE</span></li>
-                <li>Rejection Shield <span class="free">FREE</span></li>
-                <li>Cover Letter <span class="free">FREE</span></li>
-                <li>Manuscript Rate Card <span class="free">FREE</span></li>
-                <li>Certificate Of Editing <span class="free">FREE</span></li>
+                <li></li>
             </ul>
         </div>
         <div class="rewards-section">
             <h3>REWARDS CLUB</h3>
             <p>Every dollar you spend means you'll pay less for your next order!</p>
         </div>
+        <ul id="selected-items"></ul>
+    <p><strong>Total Price: <span style="font-weight: bold; color: black;">$</span><span style="font-weight: bold; color: black;" id="total-price">0</span></strong></p>
         <div class="promo-code-section">
             <label for="promo-code">Enter promo code:</label>
             <input type="text" id="promo-code" placeholder="APPLY">
@@ -396,3 +280,218 @@
     <script src="script.js"></script>
 </body>
 </html>
+                                                                                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!-- <div id="scientificTable" class="delivery-table hidden">
+            <h3>Select delivery date (GMT)</h3>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Mon, 24 Feb 08:30</span>
+                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Tue, 18 Feb 10:30</span>
+                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Wed, 01 Mar 12:30</span>
+                <span class="price"><del>$3,159.6</del> <strong>$2,449.52</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Tue, 18 Feb 10:30</span>
+                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>I need a custom plan</span>
+                <span class="price"></span>
+            </label>
+        </div>
+        
+
+        <div id="substantiveTable" class="delivery-table hidden">
+            <h3>Select delivery date (GMT)</h3>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Fri, 14 Feb 08:30</span>
+                <span class="badge popular">Popular</span>
+                <span class="price"><del>$612</del> <strong>$489.6</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            
+        </div>
+
+        <div id="scientificTable" class="delivery-table hidden">
+            <h3>Select delivery date (GMT)</h3>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Mon, 24 Feb 08:30</span>
+                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Tue, 18 Feb 10:30</span>
+                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            
+        </div>
+
+        <div id="scientificTable" class="delivery-table hidden">
+            <h3>Select delivery date (GMT)</h3>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Mon, 24 Feb 08:30</span>
+                <span class="price"><del>$1,579.8</del> <strong>$1,263.84</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="scientific-delivery">
+                <span>Tue, 18 Feb 10:30</span>
+                <span class="price"><del>$2,369.7</del> <strong>$1,895.76</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            <label class="delivery-option">
+                <input type="radio" name="substantive-delivery">
+                <span>Tue, 11 Feb 10:30</span>
+                <span class="badge trending">Trending</span>
+                <span class="price"><del>$734</del> <strong>$584.8</strong></span>
+            </label>
+            
+            
+        </div> -->
