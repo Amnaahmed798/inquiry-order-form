@@ -24,43 +24,42 @@
 
         <!-- Step 2: Upload File -->
         <div class="form-step">
-    <h2>Step1:Upload Files <i class="material-icons toggle-icon">expand_more</i></h2>
-    <hr>
-    <div class="upload-box">
-       <div id="uplaod">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <p>Files for editing</p>
-            <p><em>256-bit encryption</em></p>
-          </div>
-          <div class="drop-zone">
-            <span>Drag and drop your files here or</span>
-            <input type="file" id="file-input" multiple>
+            <h2>Step 1: Upload Files <i class="material-icons toggle-icon">expand_more</i></h2>
             <hr>
-            <div id="file-container"></div>
-            <label for="file-input" class="upload-button">Upload files</label>
-          </div>
-          <p>or</p>
-       </div>
-      
-      
-        <div id="word-count-section">
-          <!-- Link to toggle word count input (Updated the ID to be unique) -->
-          <a href="#" id="word-count-toggle-link" onclick="toggleWordCountInput(event)">Enter an approximate word count</a>
-      
-          <!-- Word count input field (hidden initially) -->
-          <div class="word-count" id="word-count-container" style="display: none;">
-            <label for="word-count-input">Enter an approximate word count:</label>
-            <input type="number" id="word-count-input" />
-            <p>or</p>
-            <!-- Back link to switch back to file upload -->
-            <a href="#" id="word-count-back-link" onclick="toggleWordCountInputBack(event)">Upload files for editing</a>
-          </div>
+            <div class="upload-box">
+               <div id="uplaod"> <!-- Make sure the ID matches exactly with JS -->
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p>Files for editing</p>
+                        <p><em>256-bit encryption</em></p>
+                    </div>
+                    <div class="drop-zone">
+                        <span>Drag and drop your files here or</span>
+                        <input type="file" id="file-input" multiple>
+                        <hr>
+                        <div id="file-container"></div>
+                        <label for="file-input" class="upload-button">Upload files</label>
+                    </div>
+                    <p>or</p>
+                    <a href="#" id="word-count-toggle-link">Enter an approximate word count</a>
+               </div>
+              
+               <div id="word-count-section">
+                    <!-- Link to toggle word count input -->
+                   
+        
+                    <!-- Word count input field (hidden initially) -->
+                    <div class="word-count" id="word-count-container" style="display:none;">
+                        <label for="word-count-input">Enter an approximate word count:</label>
+                        <input type="number" id="word-count-input" />
+                        <p>or</p>
+                        <!-- Back link to switch back to file upload -->
+                        <a href="#" id="word-count-back-link">Upload files for editing</a>
+                    </div>
+               </div>
+               <button  class="proceed-btn">Proceed to Next</button>
+            </div>
         </div>
-      
-        <button class="proceed-btn">Proceed to Next</button>
-      </div>
-   
-          </div>
+        
         
         <!-- Div 3 -->
         <div class="form-step">

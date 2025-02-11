@@ -5,6 +5,47 @@ document.addEventListener("DOMContentLoaded", function () {
     const continueBtn = document.getElementById("continue-btn");
     const toggleIcons = document.querySelectorAll(".toggle-icon");
 
+ 
+        // Add event listeners to toggle links
+        const wordCountToggleLink = document.getElementById("word-count-toggle-link");
+        const wordCountBackLink = document.getElementById("word-count-back-link");
+    
+        if (wordCountToggleLink) {
+            wordCountToggleLink.addEventListener("click", toggleWordCountInput);
+        }
+        if (wordCountBackLink) {
+            wordCountBackLink.addEventListener("click", toggleWordCountInputBack);
+        }
+ 
+    
+    // Function to show word count input and hide file upload section
+    function toggleWordCountInput(event) {
+        event.preventDefault(); // Prevent default link behavior
+    
+        const uploadSection = document.getElementById("uplaod");
+        const wordCountContainer = document.getElementById("word-count-container");
+    
+        if (uploadSection && wordCountContainer) {
+            uploadSection.style.display = "none";
+            wordCountContainer.style.display = "block";
+        }
+    }
+    
+    // Function to show file upload section and hide word count input
+    function toggleWordCountInputBack(event) {
+        event.preventDefault(); // Prevent default link behavior
+    
+        const uploadSection = document.getElementById("uplaod");
+        const wordCountContainer = document.getElementById("word-count-container");
+    
+        if (uploadSection && wordCountContainer) {
+            uploadSection.style.display = "block";
+            wordCountContainer.style.display = "none";
+        }
+    }
+    
+    
+
     let emailEntered = false;    
     const fileInput = document.getElementById('file-input');
 const allFiles = [];
