@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Submission{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-warning">
+            <h3>Edit Submission #{{ submission.id }}</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('edit_submission', id=submission.id) }}">
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Customer Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ submission.email }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="full_name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="full_name" name="full_name" value="{{ submission.personalInfo.fullName if submission.personalInfo else '' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="mobile" class="form-label">Mobile</label>
+                                <input type="text" class="form-control" id="mobile" name="mobile" value="{{ submission.personalInfo.mobile if submission.personalInfo else '' }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="pending" selected>Pending</option>
+                                    <option value="in_progress">In Progress</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Order Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="subject_area" class="form-label">Subject Area</label>
+                                <input type="text" class="form-control" id="subject_area" name="subject_area" value="{{ submission.subjectArea }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="journal_name" class="form-label">Journal Name</label>
+                                <input type="text" class="form-control" id="journal_name" name="journal_name" value="{{ submission.journalName }}">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="service_type" class="form-label">Service Type</label>
+                                <input type="text" class="form-control" id="service_type" name="service_type" value="{{ submission.selectedService|default('') }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="total_price" class="form-label">Total Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" step="0.01" class="form-control" id="total_price" name="total_price" value="{{ submission.totalPrice|default('0.00') }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="order_instructions" class="form-label">Order Instructions</label>
+                                <textarea class="form-control" id="order_instructions" name="order_instructions" rows="5">{{ submission.orderInstructions }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{{ url_for('submission_detail', id=submission.id) }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

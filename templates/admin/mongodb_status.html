@@ -1,0 +1,92 @@
+{% extends "admin/base.html" %}
+
+{% block title %}MongoDB Status{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">MongoDB Connection Status</h5>
+            <div>
+                <a href="{{ url_for('admin_submissions') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Submissions
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Database Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Database Name</th>
+                                    <td>{{ db_info.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Server Version</th>
+                                    <td>{{ db_info.server_version }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Connection Status</th>
+                                    <td>
+                                        <span class="badge bg-success">{{ db_info.connection_status }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Collections</th>
+                                    <td>
+                                        <ul class="list-unstyled mb-0">
+                                            {% for collection in db_info.collections %}
+                                                <li>{{ collection }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Forms Count</th>
+                                    <td>{{ db_info.forms_count }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Files Count</th>
+                                    <td>{{ db_info.files_count }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Actions</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{{ url_for('test_create_submission') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Create Test Submission
+                                </a>
+                                <a href="{{ url_for('admin_submissions') }}" class="btn btn-info">
+                                    <i class="fas fa-list"></i> View Submissions
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

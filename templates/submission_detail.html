@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Submission Details - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3>Submission Details</h3>
+            <p class="mb-0">Submission ID: {{ submission.id }}</p>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 mb-4">
+                    <div class="alert alert-warning">
+                        <span class="fw-bold">Status:</span> Pending
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Customer Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Full Name:</strong> {{ submission.personalInfo.fullName if submission.personalInfo else 'N/A' }}</p>
+                            <p><strong>Email:</strong> {{ submission.email }}</p>
+                            <p><strong>Mobile:</strong> {{ submission.personalInfo.mobile if submission.personalInfo else 'N/A' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Date Submitted:</strong> 
+                                {% if submission.submissionDate is string %}
+                                    {{ submission.submissionDate }}
+                                {% else %}
+                                    {{ submission.submissionDate }}
+                                {% endif %}
+                            </p>
+                            <p><strong>Subject Area:</strong> {{ submission.subjectArea }}</p>
+                            <p><strong>Journal Name:</strong> {{ submission.journalName }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Order Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Service Type:</strong> {{ submission.selectedService|default('N/A') }}</p>
+                            <p><strong>Total Price:</strong> ${{ submission.totalPrice|default('0.00') }}</p>
+                            <p><strong>Promo Applied:</strong> {{ 'Yes' if submission.promoApplied else 'No' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Order Instructions:</h5>
+                            <div class="p-3 bg-light">
+                                <p>{{ submission.orderInstructions|safe }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if submission.files %}
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Uploaded Files</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Filename</th>
+                                    <th>File ID</th>
+                                    <th>Word Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for file_id in submission.files %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ file_details[file_id].originalName if file_details and file_id in file_details else 'Unknown' }}</td>
+                                    <td>{{ file_id }}</td>
+                                    <td>{{ file_details[file_id].wordCount if file_details and file_id in file_details else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to List</a>
+                    <a href="{{ url_for('edit_submission', id=submission.id) }}" class="btn btn-warning">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

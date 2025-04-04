@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Submission Detail{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Submission Details</h6>
+            <a href="{{ url_for('submissions') }}" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+        <div class="card-body">
+            <!-- Personal Information -->
+            <div class="section mb-4">
+                <h5 class="mb-3">Personal Information</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Full Name:</strong> {{ submission.fullName }}</p>
+                        <p><strong>Email:</strong> {{ submission.email }}</p>
+                        {% if submission.secondaryEmail %}
+                        <p><strong>Secondary Email:</strong> {{ submission.secondaryEmail }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {% if submission.mobileNumber %}
+                        <p><strong>Mobile Number:</strong> {{ submission.mobileNumber }}</p>
+                        {% endif %}
+                        <p><strong>Submission Date:</strong> {{ submission.submittedAt.strftime('%Y-%m-%d %H:%M') if submission.submittedAt else 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Details -->
+            <div class="section mb-4">
+                <h5 class="mb-3">Service Details</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Selected Service:</strong> {{ submission.selectedService }}</p>
+                        <p><strong>Subject Area:</strong> {{ submission.subjectArea }}</p>
+                        <p><strong>Journal Name:</strong> {{ submission.journalName }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Quick Start Option:</strong> {{ submission.quickStart }}</p>
+                        <p><strong>Receive Updates:</strong> {{ 'Yes' if submission.receiveUpdates else 'No' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add-ons -->
+            {% if submission.addOns %}
+            <div class="section mb-4">
+                <h5 class="mb-3">Selected Add-ons</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Add-on Name</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for addon in submission.addOns %}
+                            <tr>
+                                <td>{{ addon.name }}</td>
+                                <td>${{ "%.2f"|format(addon.price|float) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Free Services -->
+            {% if submission.freeServices %}
+            <div class="section mb-4">
+                <h5 class="mb-3">Free Services</h5>
+                <ul class="list-group">
+                    {% for service in submission.freeServices %}
+                    <li class="list-group-item">{{ service }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- Files -->
+            {% if submission.files %}
+            <div class="section mb-4">
+                <h5 class="mb-3">Uploaded Files</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Word Count</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in submission.files %}
+                            <tr>
+                                <td>{{ file.name }}</td>
+                                <td>{{ file.wordCount }}</td>
+                                <td>{{ file.type if file.type else 'N/A' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Order Instructions -->
+            {% if submission.orderInstructions %}
+            <div class="section mb-4">
+                <h5 class="mb-3">Order Instructions</h5>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <p class="mb-0">{{ submission.orderInstructions }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Pricing Summary -->
+            <div class="section">
+                <h5 class="mb-3">Pricing Summary</h5>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Total Price:</strong> ${{ "%.2f"|format(submission.totalPrice|float) }}</p>
+                                <p><strong>Promo Applied:</strong> {{ 'Yes' if submission.promoApplied else 'No' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

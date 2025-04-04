@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 25px;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+        .drop-zone.drag-over {
+            background-color: #f0f0f0;
+            border-color: #0c0;
+        }
+        .upload-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload Test</h1>
+    
+    <div id="status" class="status">Checking backend connection...</div>
+    
+    <p>This is a minimal page to test file uploads to the Node.js server.</p>
+    
+    <div class="drop-zone" id="drop-zone">
+        <span>Drag and drop your files here or</span>
+        <input type="file" id="file-input" multiple>
+        <div id="file-container"></div>
+        <label for="file-input" class="upload-button">Select Files</label>
+    </div>
+    
+    <div class="result" id="result">Results will appear here...</div>
+    
+    <script>
+        // Check backend connection on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            const statusDiv = document.getElementById("status");
+            
+            // Check backend connection
+            console.log("Testing connection to backend at http://localhost:5000/api/health");
+            fetch("http://localhost:5000/api/health", {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                credentials: 'omit'
+            })
+            .then(response => {
+                console.log("Backend response status:", response.status);
+                console.log("Response headers:", Object.fromEntries([...response.headers]));
+                return response.json();
+            })
+            .then(data => {
+                console.log("Backend response data:", data);
+                if (data.success) {
+                    statusDiv.className = "status connected";
+                    statusDiv.textContent = "✅ Backend server is connected and ready!";
+                } else {
+                    throw new Error("Backend responded but with an error");
+                }
+            })
+            .catch(error => {
+                console.error("Backend connection error:", error);
+                if (error instanceof TypeError) {
+                    console.error("This might be a CORS or network connectivity issue");
+                }
+                statusDiv.className = "status disconnected";
+                statusDiv.textContent = "❌ Backend server is not connected. Please ensure the server is running.";
+            });
+                
+            // Simple file upload handler
+            const fileInput = document.getElementById("file-input");
+            const dropZone = document.getElementById("drop-zone");
+            const fileContainer = document.getElementById("file-container");
+            const resultDiv = document.getElementById("result");
+            
+            // File input change handler
+            fileInput.addEventListener("change", function() {
+                if (this.files && this.files.length > 0) {
+                    uploadFiles(this.files);
+                }
+            });
+            
+            // Drag and drop handlers
+            dropZone.addEventListener("dragover", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.add("drag-over");
+            });
+            
+            dropZone.addEventListener("dragleave", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove("drag-over");
+            });
+            
+            dropZone.addEventListener("drop", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove("drag-over");
+                
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    uploadFiles(e.dataTransfer.files);
+                }
+            });
+            
+            // Function to upload files
+            function uploadFiles(files) {
+                resultDiv.textContent = "Uploading files...";
+                
+                // Process each file
+                Array.from(files).forEach(file => {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    
+                    // Simple fetch to upload
+                    fetch("http://localhost:5000/api/upload-file", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Display file info in results div
+                        const fileDiv = document.createElement("div");
+                        fileDiv.classList.add("file-item");
+                        fileDiv.textContent = `${file.name} - ${data.success ? 'SUCCESS' : 'FAILED'}: ${data.message}`;
+                        
+                        if (data.file_id) {
+                            fileDiv.textContent += ` (ID: ${data.file_id})`;
+                        }
+                        
+                        fileContainer.appendChild(fileDiv);
+                        
+                        // Display response in result div
+                        resultDiv.textContent = "Last response:\n" + JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        resultDiv.textContent = "Error:\n" + error.message;
+                        console.error("Upload error:", error);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

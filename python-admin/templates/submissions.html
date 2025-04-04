@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Submissions{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Form Submissions</h2>
+        
+        <!-- Search Form -->
+        <form class="d-flex" method="GET">
+            <input type="text" name="search" class="form-control me-2" placeholder="Search by email or name..." value="{{ request.args.get('search', '') }}">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <!-- Submissions Table -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Service</th>
+                            <th>Add-ons</th>
+                            <th>Total Price</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for submission in submissions %}
+                        <tr>
+                            <td>{{ submission._id }}</td>
+                            <td>{{ submission.fullName }}</td>
+                            <td>{{ submission.email }}</td>
+                            <td>{{ submission.selectedService }}</td>
+                            <td>
+                                {% if submission.addOns %}
+                                <ul class="list-unstyled mb-0">
+                                    {% for addon in submission.addOns %}
+                                    <li>{{ addon.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                None
+                                {% endif %}
+                            </td>
+                            <td>${{ "%.2f"|format(submission.totalPrice|float) }}</td>
+                            <td>{{ submission.submittedAt.strftime('%Y-%m-%d %H:%M') if submission.submittedAt else 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('submission_detail', submission_id=submission._id) }}" class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if pagination.pages > 1 %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('submissions', page=pagination.page-1, search=request.args.get('search', ''), status=request.args.get('status', '')) }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    {% for page_num in range(max(1, pagination.page - 2), min(pagination.pages + 1, pagination.page + 3)) %}
+                    <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('submissions', page=page_num, search=request.args.get('search', ''), status=request.args.get('status', '')) }}">{{ page_num }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('submissions', page=pagination.page+1, search=request.args.get('search', ''), status=request.args.get('status', '')) }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

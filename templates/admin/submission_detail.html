@@ -1,0 +1,259 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Submission Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Submission Details</h2>
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Submission #{{ submission.id }}</h5>
+            <span class="badge bg-{{ submission.status|status_color }}">{{ submission.status|title }}</span>
+        </div>
+        <div class="card-body">
+            <!-- Personal Information Section -->
+            <div class="section mb-4">
+                <h4 class="section-title">Personal Information</h4>
+    <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Full Name:</strong> {{ submission.personalInfo.fullName if submission.personalInfo else 'Not provided' }}</p>
+                        <p><strong>Email:</strong> {{ submission.email }}</p>
+                        <p><strong>Mobile:</strong> {{ submission.personalInfo.mobile if submission.personalInfo else 'Not provided' }}</p>
+                    </div>
+                            </div>
+                        </div>
+                        
+            <!-- Submission Details Section -->
+            <div class="section mb-4">
+                <h4 class="section-title">Submission Details</h4>
+                <div class="row">
+                        <div class="col-md-6">
+                        <p><strong>Subject Area:</strong> {{ submission.subjectArea }}</p>
+                        <p><strong>Journal Name:</strong> {{ submission.journalName }}</p>
+                        <p><strong>Submission Date:</strong> {{ submission.submissionDate|format_date }}</p>
+                            </div>
+                        </div>
+                {% if submission.orderInstructions %}
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <p><strong>Order Instructions:</strong></p>
+                        <div class="border p-3 bg-light">{{ submission.orderInstructions|nl2br|safe }}</div>
+                            </div>
+                </div>
+                {% endif %}
+                        </div>
+                        
+            <!-- Service Information Section -->
+            <div class="section mb-4">
+                <h4 class="section-title">Service Information</h4>
+                <div class="row">
+                        <div class="col-md-6">
+                        {% if submission.selectedService is mapping %}
+                        <p><strong>Selected Service:</strong> {{ submission.selectedService.name }}</p>
+                        {% else %}
+                        <p><strong>Selected Service:</strong> {{ submission.selectedService }}</p>
+                        {% endif %}
+                            </div>
+                        </div>
+                        
+                <!-- Service Options -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Service Options:</h5>
+                        <ul class="list-unstyled">
+                            {% set service_options = submission.get('serviceOptions', {}) %}
+                            <li>
+                                <i class="fas fa-{{ 'check text-success' if service_options.get('urgentProcessing') else 'times text-danger' }}"></i>
+                                Urgent Processing
+                            </li>
+                            <li>
+                                <i class="fas fa-{{ 'check text-success' if service_options.get('formatting') else 'times text-danger' }}"></i>
+                                Formatting Required
+                            </li>
+                            <li>
+                                <i class="fas fa-{{ 'check text-success' if service_options.get('plagiarismCheck') else 'times text-danger' }}"></i>
+                                Plagiarism Check
+                            </li>
+                            <li>
+                                <i class="fas fa-{{ 'check text-success' if service_options.get('grammarCheck') else 'times text-danger' }}"></i>
+                                Grammar Check
+                            </li>
+                            <li>
+                                <i class="fas fa-{{ 'check text-success' if service_options.get('nativeSpeaker') else 'times text-danger' }}"></i>
+                                Native Speaker Requested
+                            </li>
+                        </ul>
+                            </div>
+                        </div>
+                        
+                {% if submission.selectedAddons %}
+                <div class="row mt-3">
+                        <div class="col-12">
+                        <h5>Selected Add-ons:</h5>
+                        <ul class="list-unstyled">
+                            {% for addon in submission.selectedAddons %}
+                            <li>
+                                <i class="fas fa-check text-success"></i>
+                                {{ addon.name if addon is mapping else addon }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+        </div>
+        
+            <!-- Files Section -->
+            <div class="section mb-4">
+                <h4 class="section-title">Attached Files</h4>
+                {% if files and files|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Type</th>
+                                <th>Upload Date</th>
+                                <th>Size</th>
+                                <th>Word Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files %}
+                            <tr>
+                                <td>{{ file.filename }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        {{ file.file_type|upper|replace('.', '') }}
+                                    </span>
+                                </td>
+                                <td>{{ file.upload_date|format_date }}</td>
+                                <td>{{ file.size_formatted }}</td>
+                                <td>
+                                    {% if file.word_count > 0 %}
+                                        {{ file.word_count }} words
+                                    {% else %}
+                                        {% if file.file_type in ['.docx', '.doc'] %}
+                                            <span class="text-muted">Processing...</span>
+                                        {% else %}
+                                            <span class="text-muted">N/A</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('admin_file_download', file_id=file.id) }}" 
+                                           class="btn btn-sm btn-primary"
+                                           title="Download File">
+                                           <i class="fas fa-download"></i> Download
+                                        </a>
+                                        {% if file.file_type in ['.pdf', '.txt', '.docx', '.doc'] %}
+                                        <a href="{{ url_for('admin_file_view', file_id=file.id) }}" 
+                                           class="btn btn-sm btn-info"
+                                           title="View File"
+                                           target="_blank"
+                                           onclick="return confirmView(event, '{{ file.file_type }}');">
+                                           <i class="fas fa-eye"></i> View
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                        </div>
+                    {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No files attached to this submission.
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Pricing Information Section -->
+            <div class="section mb-4">
+                <h4 class="section-title">Pricing Information</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Total Price:</strong> ${{ "%.2f"|format(submission.totalPrice or 0) }}</p>
+                        {% if submission.promoApplied %}
+                        <p><strong>Promo Applied:</strong> Yes</p>
+                        {% if submission.promoCode %}
+                        <p><strong>Promo Code:</strong> {{ submission.promoCode }}</p>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                            </div>
+                            </div>
+                            </div>
+
+    <!-- Action Buttons -->
+    <div class="row mb-4">
+        <div class="col">
+            <a href="{{ url_for('admin_edit_submission', id=submission.id) }}" class="btn btn-primary">Edit Submission</a>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                Delete Submission
+            </button>
+            <a href="{{ url_for('admin_submissions') }}" class="btn btn-secondary">Back to List</a>
+                            </div>
+                            </div>
+                        </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+            <div class="modal-body">
+                Are you sure you want to delete this submission? This action cannot be undone.
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('delete_submission', id=submission.id) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.section {
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.section-title {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #dee2e6;
+}
+</style>
+
+{% block extra_js %}
+<script>
+function confirmView(event, fileType) {
+    if (fileType === '.doc' || fileType === '.docx') {
+        if (!confirm('Word documents may open as a download. Continue?')) {
+            event.preventDefault();
+            return false;
+        }
+    }
+    return true;
+}
+
+$(document).ready(function() {
+    // Initialize tooltips
+    $('[title]').tooltip({
+        trigger: 'hover'
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

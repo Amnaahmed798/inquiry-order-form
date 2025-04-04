@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inquiry/Order Form</title>
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <!-- Material Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!-- Font Awesome CSS -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+        <!-- PDF.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+        <!-- Mammoth.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    </head>
+<body>
+<div class="main-container">
+   
+    <div class="form-container">
+        <h1>Inquiry/Order Form</h1>
+
+        <!-- Div 1 -->
+        <div class="form-step" id="step1">
+            <input type="email" id="email" placeholder="Enter your email" style="width: 50%; height: auto"/>
+            <button id="continue-btn" class="btn">Continue</button>
+        </div>
+
+
+        <!-- Step 2: Upload File -->
+        <div class="form-step">
+            <h2>Step 1: Upload Files <i class="material-icons toggle-icon">expand_more</i></h2>
+            <hr>
+            <div class="upload-box">
+               <div id="upload"> <!-- Fixed typo in ID from "uplaod" to "upload" -->
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p>Files for editing</p>
+                        <p><em>256-bit encryption</em></p>
+                    </div>
+                    <div class="drop-zone" id="drop-zone">
+                        <span>Drag and drop your files here or</span>
+                        <input type="file" id="file-input" multiple style="display:none">
+                        <div id="file-container"></div>
+                        <div id="loading-bar" class="loading-container" style="display: none;">
+                            <div class="loading-wrapper">
+                                <div class="loading-bar"></div>
+                                <i class="material-icons loading-lock-icon">lock</i>
+                            </div>
+                            <div class="loading-text">Processing...</div>
+                        </div>
+                        <label for="file-input" class="upload-button" style="cursor:pointer; display:inline-block; padding:10px 15px; background-color:#4CAF50; color:white; border-radius:4px;">Upload files</label>
+                    </div>
+                    <p>or</p>
+                    <a href="" id="word-count-toggle-link">Enter an approximate word count</a>
+               </div>
+              
+               <div id="word-count-section">
+                    <div class="word-count" id="word-count-container" style="display:none;">
+                        <div class="word-count-input-container">
+                            <label for="word-count-input">Enter an approximate word count:</label>
+                            <input type="number" id="word-count-input" min="1" placeholder="Enter number of words" />
+                            <button class="btn" onclick="submitWordCount()">Submit</button>
+                        </div>
+                        <p style="margin-top: 15px;">or</p>
+                        <a href="#" id="word-count-back-link">Upload files for editing</a>
+                    </div>
+               </div>
+               <button  class="proceed-btn">Proceed to Next</button>
+            </div>
+        </div>
+        
+        
+        <!-- Div 3 -->
+        <div class="form-step">
+            <h2>Step 2: Select Service & Delivery Plan <i class="material-icons toggle-icon">expand_more</i></h2>
+            <hr>
+        <div class="service-container">
+          <div class="service-options">
+            <label class="service-option">
+                <input type="radio" name="service" id="scientificEditing">
+                <div class="option-content">
+                    📘 Top Impact Scientific Editing
+                </div>
+            </label>
+
+            <label class="service-option">
+                <input type="radio" name="service" id="substantiveEditing">
+                <div class="option-content">
+                    <span>👑 Substantive Editing</span>
+                </div>
+            </label>
+
+            <label class="service-option">
+                <input type="radio" name="service" id="copyEditing">
+                <div class="option-content">
+                    <span>🖋️ Copy Editing</span>
+                </div>
+            </label>
+
+            <label class="service-option">
+                <input type="radio" name="service" id="proofreading">
+                <div class="option-content">
+                    <span>📜 Proofreading Service</span>
+                </div>
+            </label>
+        </div>
+
+       
+        <div id="addons1" class="add-ons" style="display: none;">
+            <h4>Add-Ons for Top Impact Scientific Editing</h4>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Poster Presentation</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Scientific News Report</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="free-services">
+                <h4>Free Services</h4>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Certificate of Editing</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Manuscript Rate Card</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Artwork Rework</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Resubmission Support</label>
+                </div>
+            </div>
+        </div>
+        
+        <div id="addons2" class="add-ons" style="display: none;">
+            <h4>Add-Ons for Substantive Editing</h4>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Simplified Abstract</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Graphical Abstract</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="free-services">
+                <h4>Free Services</h4>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Certificate of Editing</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Manuscript Rate Card</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Artwork Rework</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Resubmission Support</label>
+                </div>
+            </div>
+        </div>
+        
+        <div id="addons3" class="add-ons" style="display: none;">
+            <h4>Add-Ons for Copy Editing</h4>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Poster Presentation</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Scientific News Report</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Simplified Abstract</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Graphical Abstract</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Journal Submission</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Artwork Editing</span>
+                    <span>starting at <span class="price"><strong>$60</strong></span> per 4 figures</span>
+                    <select>
+                        <option>1-4 images</option>
+                        <option>5-8 images</option>
+                        <option>9-12 images</option>
+                    </select>
+                </label>
+            </div>
+            <div class="free-services">
+                <h4>Free Services</h4>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Certificate of Editing</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Manuscript Rate Card</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Artwork Rework</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Resubmission Support</label>
+                </div>
+            </div>
+        </div>
+        
+        <div id="addons4" class="add-ons" style="display: none;">
+            <h4>Add-Ons for Proofreading</h4>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Certificate of Editing</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="addon-item">
+                <label>
+                    <input type="checkbox">
+                    <span class="addon-name">Plagiarism Check - iThenticate</span>
+                    <span class="price"><strong>$584.8</strong></span>
+                </label>
+            </div>
+            <div class="free-services">
+                <h4>Free Services</h4>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Certificate of Editing</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Manuscript Rate Card</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Artwork Rework</label>
+                </div>
+                <div class="free-service-item">
+                    <label><input type="checkbox" checked class="free-service-checkbox"> Resubmission Support</label>
+                </div>
+            </div>
+        </div>
+            <button  class="proceed-btn">Proceed to Next</button>
+          </div>
+          </div>
+
+        <!-- Div 4 -->
+        <div class="form-step">
+            <h2>Step 3: Subject Area & Journal Details <i class="material-icons toggle-icon">expand_more</i></h2>
+     <hr>
+        <div class="form-cont">
+            <div class="container">
+                <div class="left-box">
+                    <label for="subject-area">Subject Area <span style="color: red;">*</span></label>
+                    <hr>
+                    <label for="journal-name">Journal Name</label>
+                    <hr>
+                    <label for="order-instructions">Order Instructions</label>
+                    <hr>
+                </div>
+                <div class="right-box">
+                    <div class="form-group">
+                      
+                        <input type="text" id="subject-area" placeholder="Please enter your subject area">
+                    </div>
+                    <div class="form-group">
+                       
+                        <input type="text" id="journal-name" placeholder="Enter name of journal, ISSN no., or eISSN no.">
+                    </div>
+                    <div class="form-group">
+                      
+                        <textarea id="order-instructions" placeholder="Please mention any specific instructions related to your order"></textarea>
+                    </div>
+                </div>
+            </div>
+       
+            <button  class="proceed-btn" >Proceed to Next</button>
+          </div>
+          </div>
+
+        <!-- Div 5 -->
+       
+       
+        
+          <div class="form-step">
+            <h2>Step 4: Other Detail <i class="material-icons toggle-icon">expand_more</i></h2>
+            <hr>
+            <div class="form-con">
+            <div class="form-group">
+                <label class="personal-info-label">
+                    <div>
+                    Personal Information <span class="required">*</span>
+                   </div>
+              </label>
+                <div>
+                    <div class="input-row">
+                        <input type="text" placeholder="Full name in English" id="fullName">
+                        <input type="email" placeholder="Secondary email address" id="email">
+                    </div>
+                    <div class="input-row">
+                        <input type="text" value="+92" disabled class="country-code">
+                        <input type="text" placeholder="Mobile Number" id="mobile">
+                    </div>
+                </div>
+            </div>
+    
+            <div class="quick-start">
+                <span class="lightning">⚡</span> <span class="bold-text">Quick Start</span>
+            </div>
+    
+            <div class="options">
+              <label class="option gray-box" id="optionStart">
+                  <input type="radio" name="quickStart" id="startEditing">
+                  <span class="bold-text">Yes, Start Editing My Paper.</span>
+                  <p class="description">Please initiate work on my paper if the total amount does not exceed <span class="bold-text">$500</span> <a href="#" id="editLink">edit.</a></p>
+              </label>
+          
+              <label class="option gray-box" id="optionQuote">
+                  <input type="radio" name="quickStart" id="getQuote">
+                  <span class="bold-text">Share A Quotation First.</span>
+                  <p class="description">Please share a quotation for my order with me first. (You will receive it within 60 minutes).</p>
+              </label>
+          </div>
+          
+    
+        <div class="checkbox">
+          <input type="checkbox" id="updates">
+          <label for="updates">Keep me updated with offers, new services, and the latest industry news.</label>
+        </div>
+      </div>
+    </div>
+          <button type="submit" id="btn">Submit</button>
+    </div>
+    <div class="order-summary">
+        <h2>Order Summary</h2>
+        <div class="service-details">
+            <h3>Service Name</h3>
+            <p></p>
+        </div>
+        <div class="add-ons-summary">
+            <h3>ADD-ONS:</h3>
+            <ul>
+                <li></li>
+            </ul>
+        </div>
+        <div class="rewards-section">
+            <h3>REWARDS CLUB</h3>
+            <p>Every dollar you spend means you'll pay less for your next order!</p>
+        </div>
+        <ul id="selected-items"></ul>
+    <p><strong>Total Price: <span style="font-weight: bold; color: black;">$</span><span style="font-weight: bold; color: black;" id="total-price">0</span></strong></p>
+        <div class="promo-code-section">
+            <label for="promo-code">Enter promo code:</label>
+            <input type="text" id="promo-code" placeholder="APPLY">
+            <button id="apply-promo">APPLY</button>
+        </div>
+    </div>
+</div>
+    <script src="{{ url_for('static', filename='script-fixed.js') }}"></script>
+</body>
+</html>
