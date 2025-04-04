@@ -15,6 +15,7 @@ from flask_pymongo import PyMongo
 import docx
 import logging
 import json
+import tempfile
 
 # Load environment variables
 load_dotenv()
@@ -33,9 +34,7 @@ app = Flask(__name__)
 # Configure CORS properly with all necessary settings
 CORS(app, resources={
     r"/*": {
-        "origins": ["http://127.0.0.1:5500", "http://localhost:5500", "http://127.0.0.1:5000", "http://localhost:5000", 
-                     "http://127.0.0.1:5001", "http://localhost:5001", "http://127.0.0.1:5002", "http://localhost:5002",
-                     "http://127.0.0.1:8000", "http://localhost:8000"],  # Add all frontend and backend origins
+        "origins": ["*"],  # Allow all origins in production
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization", "Accept", "X-Requested-With"],
         "expose_headers": ["Content-Type", "Authorization"],
@@ -102,10 +101,20 @@ except Exception as e:
     submissions_collection = None
     files_collection = None
 
-# Configure upload folder
-UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads'))
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+# For Vercel, use in-memory or temporary file storage
+# Determine if running in Vercel environment
+IS_VERCEL = os.environ.get('VERCEL', False)
+
+if IS_VERCEL:
+    # Use temp directory for Vercel's serverless environment
+    UPLOAD_FOLDER = tempfile.gettempdir()
+    app.logger.info(f"Running in Vercel environment, using temp dir: {UPLOAD_FOLDER}")
+else:
+    # Local development or other hosting
+    UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads'))
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Configure maximum file size (16MB)
@@ -286,16 +295,21 @@ def upload_file():
                     except Exception as e:
                         app.logger.error(f"Error counting words in docx: {str(e)}")
                 
+                # For Vercel's serverless environment, we can't store files persistently
+                # Instead, we'll need to upload to a storage service or just store metadata
+                is_vercel = os.environ.get('VERCEL', False)
+                
                 # Create file document in MongoDB
                 file_data = {
                     "originalName": filename,
                     "fileName": unique_filename,
-                    "filePath": file_path,
+                    "filePath": file_path if not is_vercel else "",
                     "fileSize": os.path.getsize(file_path),
                     "fileType": file_extension,
                     "wordCount": word_count,
                     "uploadDate": datetime.utcnow(),
-                    "status": "active"
+                    "status": "active",
+                    "vercelEnvironment": is_vercel
                 }
                 
                 # Insert file info into MongoDB files collection
@@ -325,6 +339,14 @@ def upload_file():
                             
                     except Exception as e:
                         app.logger.error(f"Error updating submission with file: {str(e)}")
+                
+                # If on Vercel, clean up the temporary file as it can't be stored persistently
+                if is_vercel and os.path.exists(file_path):
+                    try:
+                        os.remove(file_path)
+                        app.logger.info(f"Removed temporary file from Vercel environment: {file_path}")
+                    except Exception as e:
+                        app.logger.error(f"Error removing temporary file: {str(e)}")
                 
                 # Return both file_id and fileId to ensure compatibility
                 response_data = {
@@ -1434,5 +1456,9 @@ def check_mongodb():
 if __name__ == '__main__':
     with app.app_context():
         create_admin()
-    # Disable auto-reloader and use host 0.0.0.0 to make it accessible from other devices
-    app.run(debug=True, port=5000, use_reloader=False, host='127.0.0.1') 
+    # Get port from environment variable or use default
+    port = int(os.environ.get('PORT', 5000))
+    host = os.environ.get('HOST', '127.0.0.1')
+    # Disable auto-reloader in production
+    debug = os.environ.get('DEBUG', 'False').lower() == 'true'
+    app.run(debug=debug, port=port, host=host, use_reloader=False) 
