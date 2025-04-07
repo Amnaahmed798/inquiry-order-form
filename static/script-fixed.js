@@ -1042,36 +1042,6 @@ function testBackendConnection() {
         });
 }
 
-function showBackendStatus(isConnected) {
-    // Remove any existing status message
-    const existingStatus = document.querySelector('.backend-status-message');
-    if (existingStatus) existingStatus.remove();
-    
-    // Create new status message
-    const statusDiv = document.createElement('div');
-    statusDiv.className = 'backend-status-message';
-    statusDiv.style.padding = '10px';
-    statusDiv.style.margin = '10px 0';
-    statusDiv.style.borderRadius = '5px';
-    statusDiv.style.textAlign = 'center';
-    statusDiv.style.fontWeight = 'bold';
-    
-    if (isConnected) {
-        statusDiv.style.backgroundColor = '#d4edda';
-        statusDiv.style.color = '#155724';
-        statusDiv.style.border = '1px solid #c3e6cb';
-        statusDiv.textContent = '✅ Backend server is connected and ready!';
-    } else {
-        statusDiv.style.backgroundColor = '#ffcccc';
-        statusDiv.style.color = '#721c24';
-        statusDiv.style.border = '1px solid #f5c6cb';
-        statusDiv.textContent = '⚠️ Warning: Backend server is not connected. Demo mode enabled.';
-    }
-    
-    // Insert at top of body
-    document.body.insertBefore(statusDiv, document.body.firstChild);
-}
-
 function showSuccessMessage(formData) {
     // Create success message with free services list
     let freeServicesHtml = '';
