@@ -25,7 +25,7 @@ app = Flask(__name__)
 
 # Configure session and cookie settings
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))
-app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production only
+app.config['SESSION_COOKIE_SECURE'] = os.environ.get('FLASK_ENV') == 'production'  # True in production, False in development
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
