@@ -20,17 +20,77 @@ import tempfile
 # Load environment variables
 load_dotenv()
 
+# Initialize Flask app first
+app = Flask(__name__)
+
+# Configure session and cookie settings
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))
+app.config['SESSION_COOKIE_SECURE'] = False  # Set to True in production only
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+app.config['SESSION_TYPE'] = 'filesystem'
+
+# Define admin_required decorator
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not session.get('user_id'):
-            app.logger.warning("No user_id in session, redirecting to login")
-            flash('Please log in to access this page', 'warning')
+        if not current_user.is_authenticated:
+            return redirect(url_for('admin_login'))
+        if not current_user.is_admin:
+            flash('Access denied. Admin privileges required.', 'danger')
             return redirect(url_for('admin_login'))
         return f(*args, **kwargs)
     return decorated_function
 
-app = Flask(__name__)
+# MongoDB Configuration
+mongo_uri = os.environ.get('MONGODB_URI')
+if not mongo_uri:
+    raise ValueError("No MONGODB_URI environment variable set")
+
+# Initialize MongoDB with proper error handling and production settings
+try:
+    mongo = PyMongo(app, uri=mongo_uri, 
+                   connectTimeoutMS=30000,
+                   socketTimeoutMS=45000,
+                   retryWrites=True,
+                   retryReads=True)
+    
+    # Test the connection
+    mongo.db.command('ping')
+    print("Successfully connected to MongoDB")
+    
+    # Ensure collections exist
+    if 'forms' not in mongo.db.list_collection_names():
+        mongo.db.create_collection('forms')
+        print("Created 'forms' collection")
+    
+    if 'files' not in mongo.db.list_collection_names():
+        mongo.db.create_collection('files')
+        print("Created 'files' collection")
+    
+    # Get collections
+    submissions_collection = mongo.db.forms
+    files_collection = mongo.db.files
+    
+except Exception as e:
+    print(f"Error connecting to MongoDB: {e}")
+    raise
+
+# Basic configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///users.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MONGO_URI'] = mongo_uri
+
+# Production settings
+if os.environ.get('FLASK_ENV') == 'production':
+    app.config['DEBUG'] = False
+    app.config['TESTING'] = False
+    # Additional production settings
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 # Configure CORS properly with all necessary settings
 CORS(app, resources={
     r"/*": {
@@ -43,63 +103,9 @@ CORS(app, resources={
     }
 })
 
-# Basic configuration
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24))
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///users.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['MONGO_URI'] = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/')
-app.config['MONGO_DB_NAME'] = os.environ.get('MONGO_DB_NAME', 'foem')
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 app.logger.setLevel(logging.INFO)
-
-# Connect to MongoDB
-try:
-    app.logger.info(f"Attempting to connect to MongoDB at {app.config['MONGO_URI']}")
-    
-    # Use a more reliable connection approach with better error handling
-    mongo_client = MongoClient(
-        app.config['MONGO_URI'],
-        serverSelectionTimeoutMS=10000,  # Increased timeout
-        connectTimeoutMS=10000,
-        socketTimeoutMS=10000,
-        retryWrites=True,
-        retryReads=True
-    )
-    
-    # Test the connection
-    mongo_client.server_info()
-    app.logger.info(f"✅ MongoDB connection successful! Connected to database: {app.config['MONGO_DB_NAME']}")
-    
-    # Get database and collections
-    db = mongo_client[app.config['MONGO_DB_NAME']]
-    app.logger.info(f"Collections available: {db.list_collection_names()}")
-    
-    # Ensure collections exist
-    if 'forms' not in db.list_collection_names():
-        app.logger.info("Creating 'forms' collection")
-        db.create_collection('forms')
-    
-    if 'files' not in db.list_collection_names():
-        app.logger.info("Creating 'files' collection")
-        db.create_collection('files')
-    
-    submissions_collection = db['forms']
-    files_collection = db['files']
-    
-    # Verify collections are accessible
-    submissions_collection.find_one({})
-    files_collection.find_one({})
-    
-    app.logger.info("MongoDB collections initialized successfully")
-    
-except Exception as e:
-    app.logger.error(f"❌ MongoDB connection error: {str(e)}")
-    app.logger.error(f"Failed to connect to MongoDB at {app.config['MONGO_URI']}")
-    app.logger.error("Please make sure MongoDB is running and the database exists")
-    submissions_collection = None
-    files_collection = None
 
 # For Vercel, use in-memory or temporary file storage
 # Determine if running in Vercel environment
@@ -608,9 +614,14 @@ def edit_submission(submission_id):
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     try:
-        # If user is already logged in, redirect to dashboard
-        if session.get('user_id'):
-            return redirect(url_for('admin_dashboard'))
+        # If user is already logged in and is admin, redirect to dashboard
+        if current_user.is_authenticated:
+            if current_user.is_admin:
+                return redirect(url_for('admin_dashboard'))
+            else:
+                logout_user()  # Log out non-admin users
+                flash('Access denied. Admin privileges required.', 'danger')
+                return render_template('admin/login.html')
 
         if request.method == 'POST':
             email = request.form.get('email')
@@ -620,8 +631,16 @@ def admin_login():
             
             # Check admin credentials
             if email == 'admin@example.com' and password == 'admin123':
-                session['user_id'] = 'admin'
-                session.permanent = True  # Make session permanent
+                # Find or create admin user
+                admin = User.query.filter_by(username='admin@example.com').first()
+                if not admin:
+                    admin = User(username='admin@example.com', is_admin=True)
+                    admin.set_password('admin123')
+                    db.session.add(admin)
+                    db.session.commit()
+                
+                # Log in the admin user
+                login_user(admin, remember=True)
                 app.logger.info(f"Admin login successful for {email}")
                 flash('Welcome back, Admin!', 'success')
                 return redirect(url_for('admin_dashboard'))
@@ -639,7 +658,7 @@ def admin_login():
 
 @app.route('/admin/logout')
 def admin_logout():
-    session.pop('user_id', None)
+    logout_user()
     flash('You have been logged out', 'info')
     return redirect(url_for('admin_login'))
 
@@ -743,7 +762,7 @@ def admin_submissions():
         # Get total count for pagination
         try:
             # Verify MongoDB connection is still active
-            mongo_client.server_info()
+            mongo.db.command('ping')
             
             total_submissions = submissions_collection.count_documents({})
             app.logger.info(f"Total submissions found: {total_submissions}")
@@ -1430,7 +1449,7 @@ def check_mongodb():
             return redirect(url_for('admin_submissions'))
             
         # Check MongoDB connection
-        server_info = mongo_client.server_info()
+        server_info = mongo.db.command('ping')
         app.logger.info(f"MongoDB server info: {server_info}")
         
         # Get database info
